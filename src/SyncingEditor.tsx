@@ -6,21 +6,27 @@ import io from "socket.io-client";
 
 const socket = io("http://localhost:3001");
 
-interface Props {}
+interface Props {
+  groupId: string;
+}
 
-export const SyncingEditor: React.FC<Props> = () => {
+export const SyncingEditor: React.FC<Props> = ({ groupId }) => {
   const [value, setValue] = useState(initialValue);
   const id = useRef(`${Date.now()}`);
   const editor = useRef<Editor | null>(null);
   const remote = useRef(false);
 
   useEffect(() => {
-    socket.once("new-value", (value: ValueJSON) => {
-      setValue(Value.fromJSON(value));
-    });
-    socket.emit("get-value");
+    fetch(`http://localhost:3001/groups/${groupId}`).then((x) =>
+      x.json().then((data) => {
+        console.log(data);
+        setValue(Value.fromJSON(data));
+      })
+    );
+
+    const eventName = `new-remote-operations-${groupId}`;
     socket.on(
-      "new-remote-operations",
+      eventName,
       ({ editorId, ops }: { editorId: string; ops: Operation[] }) => {
         if (id.current !== editorId) {
           remote.current = true;
@@ -29,6 +35,10 @@ export const SyncingEditor: React.FC<Props> = () => {
         }
       }
     );
+
+    return () => {
+      socket.off(eventName);
+    };
   }, []);
 
   return (
@@ -63,6 +73,7 @@ export const SyncingEditor: React.FC<Props> = () => {
             editorId: id.current,
             ops,
             value: opts.value.toJSON(),
+            groupId,
           });
         }
       }}
