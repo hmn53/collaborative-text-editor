@@ -1,25 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Redirect, Route } from "react-router-dom";
+import { SyncingEditor } from "./SyncingEditor";
+import { GroupEditor } from "./GroupEditor";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Route
+        path="/"
+        exact
+        render={() => {
+          return <Redirect to={`/group/${Date.now()}`} />;
+        }}
+      />
+      <Route path="/group/:id" exact component={GroupEditor} />
+    </BrowserRouter>
   );
 }
 
