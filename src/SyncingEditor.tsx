@@ -5,7 +5,7 @@ import { Operation, Value, ValueJSON } from "slate";
 import { css, cx } from "@emotion/css";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://collaborativetextserver.herokuapp.com/");
 
 interface Props {
   groupId: string;
@@ -41,7 +41,9 @@ export const SyncingEditor: React.FC<Props> = ({ groupId }) => {
   const remote = useRef(false);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/groups/${groupId}`).then((x) =>
+    fetch(
+      `https://collaborativetextserver.herokuapp.com/groups/${groupId}`
+    ).then((x) =>
       x.json().then((data) => {
         console.log(data);
         setValue(Value.fromJSON(data));
