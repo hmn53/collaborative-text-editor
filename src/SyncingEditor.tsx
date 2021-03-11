@@ -81,17 +81,17 @@ export const SyncingEditor: React.FC<Props> = ({ groupId }) => {
           setValue(opts.value);
 
           const ops = opts.operations
-            .filter((o: any) => {
-              if (o) {
-                return (
-                  o.type !== "set_selection" &&
-                  o.type !== "set_value" &&
-                  (!o.data || !o.data.has("source"))
-                );
-              }
+            // .filter((o: any) => {
+            //   if (o) {
+            //     return (
+            //       o.type !== "set_selection" &&
+            //       o.type !== "set_value" &&
+            //       (!o.data || !o.data.has("source"))
+            //     );
+            //   }
 
-              return false;
-            })
+            //   return false;
+            // })
             .toJS()
             .map((o: any) => ({ ...o, data: { source: "one" } }));
 
